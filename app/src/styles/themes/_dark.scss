@@ -1,10 +1,11 @@
 // Dark Mode
 @mixin dark {
 	$purple: #8866ff;
+	$blue: #3d56da;
 	$color-mapping: map-merge(
 		$color-mapping,
 		(
-			'primary': $purple,
+			'primary': $blue,
 			'secondary': $pink,
 		)
 	);
