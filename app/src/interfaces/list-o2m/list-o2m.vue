@@ -330,7 +330,8 @@ const {
 	localDelete,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
-
+console.log({value, query, relationInfo, primaryKey});
+watch(() => displayItems.value, (divalue) => {console.log(props.collection); console.log(props.field); console.log(divalue);});
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
 const showingCount = computed(() => {
@@ -353,7 +354,7 @@ watch(
 		}
 
 		const relatedCollection = relationInfo.value.relatedCollection.collection;
-
+		console.log(displayItems.value);
 		const contentWidth: Record<string, number> = {};
 		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
 			props.fields.forEach((key) => {
@@ -372,7 +373,7 @@ watch(
 
 				// when user has no permission to this field or junction collection
 				if (!field) return null;
-
+				console.log(key);
 				return {
 					text: field.name,
 					value: key,
@@ -381,6 +382,7 @@ watch(
 				};
 			})
 			.filter((key) => key !== null);
+			console.log(headers.value);
 	},
 	{ immediate: true }
 );
@@ -474,6 +476,9 @@ function editRow({ item }: { item: DisplayItem }) {
 }
 
 function stageEdits(item: Record<string, any>) {
+	console.log(displayItems);
+	console.log(item);
+	console.log(`Is ${newItem ? '' : 'not'} new`);
 	if (isEmpty(item)) return;
 
 	if (newItem) {
@@ -499,6 +504,12 @@ function deleteItem(item: DisplayItem) {
 }
 
 const values = inject('values', ref<Record<string, any>>({}));
+watch(() => values.value, (divalue) => console.log(JSON.parse(JSON.stringify(values.value))));
+//watch(() => values.value, (newcb, oldcb) => {if(newcb.cb.length != oldcb.cb.length || newcb.cb[0] != oldcb.cb[0]) {console.log(newcb.cb);newItem = true; if(!displayItems.value.find((it) => it.color.colors_id.id == 1)) stageEdits({color: {colors_id: {id: 1, color: '#801900', name: 'rojo'}}}); newItem = false;}});
+//watch(() => values.value.colors, (newcb) => {console.log(JSON.parse(JSON.stringify(newcb)));});
+console.log(JSON.parse(JSON.stringify(values.value)));
+console.log(values.value);
+console.log(displayItems.value);
 const customFilter = computed(() => {
 	const filter: Filter = {
 		_and: [],
