@@ -27,6 +27,9 @@
 			<template #actions>
 				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
+				<v-button v-tooltip.bottom="'show related'" icon rounded @click="emitShowRelated">
+					<v-icon name="circle" />
+				</v-button>
 				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 					<v-icon name="check" />
 				</v-button>
@@ -77,7 +80,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	emits: ['update:active', 'input'],
+	emits: ['update:active', 'input', 'showrelated'],
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
@@ -121,7 +124,10 @@ export default defineComponent({
 			},
 		});
 
+		const emitShowRelated = () => { emit('showrelated');  };
+
 		return {
+			emitShowRelated,
 			t,
 			save,
 			cancel,

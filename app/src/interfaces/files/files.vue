@@ -109,13 +109,14 @@
 			:filter="customFilter"
 			multiple
 			@input="onSelect"
+			@showrelated="$event => showrelatedmodel = !showrelatedmodel"
 		/>
 
 		<v-dialog v-if="!disabled" v-model="showUpload">
 			<v-card>
 				<v-card-title>{{ t('upload_file') }}</v-card-title>
 				<v-card-text>
-					<v-upload multiple from-url :folder="folder" @input="onUpload" />
+					<v-upload multiple from-url :folder="folder" :preset="{ related_xproduct: values.xproduct }" @input="onUpload" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showUpload = false">{{ t('done') }}</v-button>
@@ -128,7 +129,7 @@
 <script setup lang="ts">
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, watch, inject } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
@@ -141,6 +142,11 @@ import { useUserStore } from '@/stores/user';
 import { getFieldsFromTemplate } from '@directus/shared/utils';
 import { Filter } from '@directus/shared/types';
 
+//
+const values = inject('values', ref<Record<string, any>>({}));
+console.log(values.value);
+watch(() => values.value, (divalue) => console.log(JSON.parse(JSON.stringify(values.value))));
+const showrelatedmodel = ref(true);
 const props = withDefaults(
 	defineProps<{
 		value?: (number | string | Record<string, any>)[] | Record<string, any>;
@@ -364,7 +370,13 @@ function getFilename(junctionRow: Record<string, any>) {
 }
 
 const customFilter = computed(() => {
-	const filter: Filter = {
+	const filter: Filter = showrelatedmodel.value ?
+	{
+		_and: [],
+		related_xproduct: {
+			_eq: values.value.xproduct,
+		},
+	} : {
 		_and: [],
 	};
 
