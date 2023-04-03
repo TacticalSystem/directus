@@ -27,7 +27,7 @@
 			<template #actions>
 				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
-				<v-button v-tooltip.bottom="'show related'" icon rounded @click="emitShowRelated">
+				<v-button v-if="showRelatedFilter" v-tooltip.bottom="'show related'" icon rounded @click="emitShowRelated">
 					<v-icon name="circle" />
 				</v-button>
 				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
@@ -55,6 +55,7 @@ import { Filter } from '@directus/shared/types';
 import { usePreset } from '@/composables/use-preset';
 import { useCollection, useLayout } from '@directus/shared/composables';
 import SearchInput from '@/views/private/components/search-input.vue';
+import { useFieldsStore } from '@/stores/fields';
 
 export default defineComponent({
 	components: { SearchInput },
@@ -78,6 +79,10 @@ export default defineComponent({
 		filter: {
 			type: Object as PropType<Filter>,
 			default: null,
+		},
+		showRelatedFilter: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	emits: ['update:active', 'input', 'showrelated'],
@@ -125,6 +130,9 @@ export default defineComponent({
 		});
 
 		const emitShowRelated = () => { emit('showrelated');  };
+
+		const fieldsStore = useFieldsStore();
+		console.log(fieldsStore.getFieldsForCollection(collection.value));
 
 		return {
 			emitShowRelated,
