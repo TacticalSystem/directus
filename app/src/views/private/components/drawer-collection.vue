@@ -28,7 +28,7 @@
 				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
 				<v-button v-if="showRelatedFilter" v-tooltip.bottom="'show related'" icon rounded @click="emitShowRelated">
-					<v-icon name="circle" />
+					<v-icon :color="showRelatedBtn ? 'red' : 'primary'" name="circle" />
 				</v-button>
 				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 					<v-icon name="check" />
@@ -129,7 +129,9 @@ export default defineComponent({
 			},
 		});
 
-		const emitShowRelated = () => { emit('showrelated');  };
+		const showRelatedBtn = ref(false);
+
+		const emitShowRelated = () => { emit('showrelated'); showRelatedBtn.value = !showRelatedBtn.value };
 
 		const fieldsStore = useFieldsStore();
 		console.log(fieldsStore.getFieldsForCollection(collection.value));
@@ -149,6 +151,7 @@ export default defineComponent({
 			collectionInfo,
 			search,
 			presetFilter,
+			showRelatedBtn,
 		};
 
 		function useActiveState() {
