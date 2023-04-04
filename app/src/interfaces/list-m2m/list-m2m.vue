@@ -1,5 +1,8 @@
 <template>
-	<v-notice v-if="!relationInfo" type="warning">
+	<div v-if="!isRelatedPropActive">
+		<v-input v-model="nointerfacetext" small readonly></v-input>
+	</div>
+	<v-notice v-else-if="!relationInfo" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
 	<div v-else class="many-to-many">
@@ -214,7 +217,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
-
+const nointerfacetext = ref('Propiedad desactivada');
 const props = withDefaults(
 	defineProps<{
 		value?: (number | string | Record<string, any>)[] | Record<string, any>;
@@ -621,6 +624,10 @@ const selectAllowed = computed(() => {
 
 	return hasJunctionPermissions;
 });
+
+const isRelatedPropActive = computed(() =>
+	values.value.cb.find((c: string) => ['color', 'talla'].find((cd: string) => c == cd))
+);
 </script>
 
 <style lang="scss">
